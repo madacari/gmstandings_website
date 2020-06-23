@@ -11,14 +11,9 @@ class Selector extends React.Component<SelectorProps> {
     render() {
         const {type, options} = this.props;
 
-        var buttons = []
-        for (let i=0; i<options.length; i++) {
-            buttons.push(<button>{options[i]}</button>);
-        }
-
         return (
             <div className={type.toLowerCase()+"-buttons"}>
-                {buttons}
+                {options.map((option) => <button>{option}</button>)}
             </div>
             // <button>{this.props.type} Selector</button>
         );
