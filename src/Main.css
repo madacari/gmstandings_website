@@ -1,0 +1,12 @@
+.standings-table {
+    float: left;
+    width : 40%;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.match-selector {
+    width : 40%;
+    float: right;
+    padding-top: 100px;
+}
