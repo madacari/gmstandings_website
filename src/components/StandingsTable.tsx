@@ -1,7 +1,6 @@
 import React from 'react';
 import TableSelector from './TableSelector';
 import './StandingsTable.css';
-import { Players } from '../types';
 
 interface TableDisplayProps {
     value: string;
@@ -14,13 +13,17 @@ class TableDisplay extends React.Component<TableDisplayProps> {
 }
 
 interface StandingsTableProps {
-    players: string[]
-    onClickRegion: (region: string) => void
+    players: string[],
+    results: string,
+    onClickRegion: (region: string) => void,
     onClickGroup: (group: string) => void
 }
 
 class StandingsTable extends React.Component<StandingsTableProps> {
     render() {
+        const players = this.props.players;
+        const results = this.props.results;
+        
         return (
             <div>
                 <div className="table-selector">
@@ -30,7 +33,7 @@ class StandingsTable extends React.Component<StandingsTableProps> {
                     />
                 </div>
                 <div className="table-display">
-                    <TableDisplay value={this.props.players.join(' ')}/>
+                    <TableDisplay value={players.join(' ') + " \n" + results}/>
                 </div>
 
             </div>
