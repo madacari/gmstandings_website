@@ -14,70 +14,23 @@ class TableDisplay extends React.Component<TableDisplayProps> {
 }
 
 interface StandingsTableProps {
-    players: Players
+    players: string[]
+    onClickRegion: (region: string) => void
+    onClickGroup: (group: string) => void
 }
 
-interface StandingsTableState {
-    regionToDisplay: string
-    groupToDisplay: string
-}
-
-class StandingsTable extends React.Component<StandingsTableProps, StandingsTableState> {
-    constructor(props: StandingsTableProps) {
-        super(props);
-
-        this.state= {
-            regionToDisplay: "APAC",
-            groupToDisplay: "A"
-                    };
-    }
-
-    handleClickRegion(region: string) {
-        this.setState({regionToDisplay: region});
-    }
-
-    handleClickGroup(group: string) {
-        this.setState({ groupToDisplay: group });
-    }
-
-    selectTable() : string {
-        // Choose region
-        let playerReg;
-        switch(this.state.regionToDisplay){
-            case "NA":
-                playerReg = this.props.players.NA;
-                break;
-            case "EU":
-                playerReg = this.props.players.EU;
-                break;
-            default:
-                playerReg = this.props.players.APAC;
-        }
-        // Choose group
-        let players;
-        switch(this.state.groupToDisplay) {
-            case "B":
-                players = playerReg.divB;
-                break;
-            default:
-                players = playerReg.divA;
-        }
-        return players.join(', ');
-    }
-
+class StandingsTable extends React.Component<StandingsTableProps> {
     render() {
-        const players = this.selectTable();
-
         return (
             <div>
                 <div className="table-selector">
                     <TableSelector 
-                        onClickRegion={(region) => this.handleClickRegion(region)}
-                        onClickGroup={(group) => this.handleClickGroup(group)}
+                        onClickRegion={(region) => this.props.onClickRegion(region)}
+                        onClickGroup={(group) => this.props.onClickGroup(group)}
                     />
                 </div>
                 <div className="table-display">
-                    <TableDisplay value={players}/>
+                    <TableDisplay value={this.props.players.join(' ')}/>
                 </div>
 
             </div>

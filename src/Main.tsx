@@ -7,6 +7,8 @@ import { Players } from './types/index'
 
 interface MainState {
     players: Players,
+    regionToDisplay: string;
+    groupToDisplay: string;
 }
 
 class Main extends React.Component<{},MainState> {
@@ -27,14 +29,55 @@ class Main extends React.Component<{},MainState> {
                     divB: ['PNC', 'Fr0zen', 'Purple']
                 },
             },
+            regionToDisplay: "APAC",
+            groupToDisplay: "A"
         }
     }
 
+    handleClickRegion(region: string) {
+        this.setState({ regionToDisplay: region });
+    }
+
+    handleClickGroup(group: string) {
+        this.setState({ groupToDisplay: group });
+    }
+
+    selectPlayers(): string[] {
+        // Choose region
+        let playerReg;
+        switch (this.state.regionToDisplay) {
+            case "NA":
+                playerReg = this.state.players.NA;
+                break;
+            case "EU":
+                playerReg = this.state.players.EU;
+                break;
+            default:
+                playerReg = this.state.players.APAC;
+        }
+        // Choose group
+        let players;
+        switch (this.state.groupToDisplay) {
+            case "B":
+                players = playerReg.divB;
+                break;
+            default:
+                players = playerReg.divA;
+        }
+        return players;
+    }
+
     render() {
+        const players = this.selectPlayers();
+
         return (
             <div className="standings-simulator">
                 <div className="standings-table">
-                    <StandingsTable players={this.state.players}/>
+                    <StandingsTable 
+                        players={players}
+                        onClickRegion={(region) => this.handleClickRegion(region)}
+                        onClickGroup={(group) => this.handleClickGroup(group)}
+                    />
                 </div>
                 {/* <div className="match-selector"> */}
                     {/* <MatchSelector /> */}
