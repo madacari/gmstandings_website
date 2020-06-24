@@ -1,7 +1,11 @@
 import React from "react";
 import Selector from './Selector'
 
-class MatchSelector extends React.Component {
+interface MatchSelectorProps {
+    onClick: (match: string) => void
+}
+
+class MatchSelector extends React.Component<MatchSelectorProps> {
 
     render() {
         const defaultMatch = ["player 1", "player 2"];
@@ -9,7 +13,14 @@ class MatchSelector extends React.Component {
         
         return (
             <div>
-                {matches.map((match) => <Selector type="Match" options={match} />)}
+                {
+                matches.map((match) => 
+                    <Selector 
+                        type="Match" 
+                        options={match} 
+                        onClick={(winner) => this.props.onClick(winner)}
+                    />
+                )}
             </div>
         )
     }

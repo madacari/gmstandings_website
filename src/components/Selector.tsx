@@ -5,6 +5,7 @@ import React from 'react';
 interface SelectorProps {
     type: string;
     options: string[];
+    onClick: (option: string) => void;
 }
 
 class Selector extends React.Component<SelectorProps> {
@@ -13,7 +14,12 @@ class Selector extends React.Component<SelectorProps> {
 
         return (
             <div className={type.toLowerCase()+"-buttons"}>
-                {options.map((option) => <button>{option}</button>)}
+                {
+                options.map((option) => 
+                    <button onClick={() => this.props.onClick(option)}>
+                        {option} 
+                    </button>
+                )}
             </div>
             // <button>{this.props.type} Selector</button>
         );
