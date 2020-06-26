@@ -21,8 +21,7 @@ interface StandingsTableProps {
 
 class StandingsTable extends React.Component<StandingsTableProps> {
     render() {
-        const players = this.props.players;
-        const results = this.props.results;
+        const { players, results } = this.props;
         
         return (
             <div>

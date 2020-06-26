@@ -16,7 +16,7 @@ class MatchSelector extends React.Component<MatchSelectorProps> {
             <div>
                 {
                 matches.map((match: string[], mIndex: number) => 
-                    <div className={"match-"+mIndex+"-buttons"}>
+                    <div className={`match-${mIndex}-buttons`}>
                         {match.map((player: string ,pIndex:number) =>
                                 <button onClick={() => this.props.onClickMatch(mIndex, pIndex)}>
                                     {player}

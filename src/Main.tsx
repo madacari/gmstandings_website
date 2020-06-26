@@ -28,7 +28,7 @@ class Main extends React.Component<{},MainState> {
         }
     }
 
-    handleClickRegion(region: string) {
+    handleClickRegion = (region: string) => {
         if (this.state.regionToDisplay !== region) {
             const players = selectPlayers(region, 'A');
             this.setState({
@@ -44,7 +44,7 @@ class Main extends React.Component<{},MainState> {
         }
     }
 
-    handleClickGroup(group: string) {
+    handleClickGroup = (group: string) => {
         if (this.state.groupToDisplay !== group) {
             const players = selectPlayers(this.state.regionToDisplay, group);
             this.setState({ 
@@ -58,31 +58,35 @@ class Main extends React.Component<{},MainState> {
         }
     }
 
-    handleClickMatch(mIndex: number, wIndex: number) {
+    handleClickMatch = (mIndex: number, wIndex: number) => {
+        const { results, matches } = this.state;
         this.setState({
             results: 
-                this.state.results + 
-                this.state.matches[mIndex][wIndex] + " beat " + 
-                this.state.matches[mIndex][+!wIndex] + ". \n"
+                results + 
+                matches[mIndex][wIndex] + " beat " + 
+                matches[mIndex][+!wIndex] + ". \n"
         });
     }
 
     render() {
+        const {players, results, matches} = this.state;
         return (
             <div className="standings-simulator">
                 <div className="standings-table">
                     <StandingsTable 
                         // in case of undefined
-                        players={this.state.players}
-                        results={this.state.results}
-                        onClickRegion={(region) => this.handleClickRegion(region)}
-                        onClickGroup={(group) => this.handleClickGroup(group)}
+                        players={players}
+                        results={results}
+                        onClickRegion={this.handleClickRegion}
+                        onClickGroup={this.handleClickGroup}
                     />
                 </div>
                 <div className="match-selector">
                     <MatchSelector 
-                    matches = {this.state.matches}
-                    onClickMatch={(mIndex, wIndex) => this.handleClickMatch(mIndex, wIndex)}/>
+                    matches = {matches}
+                    // onClickMatch={(mIndex, wIndex) => this.handleClickMatch(mIndex, wIndex)}/>
+                    onClickMatch={this.handleClickMatch}
+                />
                 </div>
             </div>
         );
@@ -109,7 +113,7 @@ const allPlayers = {
 
 function selectPlayers(regionToDisplay: string, groupToDisplay: string): string[] {
     // Choose region
-    var playerReg;
+    let playerReg;
     switch (regionToDisplay) {
         case "NA":
             playerReg = allPlayers.NA;
@@ -133,7 +137,7 @@ function selectPlayers(regionToDisplay: string, groupToDisplay: string): string[
 }
 
 function selectMatches(players: string[]): string[][] {
-    var matches = [];
+    let matches = [];
     // make all combinations without repetition of players (i.e possible matches)
     // https://gist.github.com/axelpale/3118596
     for (let i = 0; i < players.length + 1; i++) {
