@@ -2,21 +2,37 @@ import React from 'react';
 import TableSelector from './TableSelector';
 import './StandingsTable.css';
 
-class TableDisplay extends React.Component {
+interface TableDisplayProps {
+    value: string;
+}
+
+class TableDisplay extends React.Component<TableDisplayProps> {
     render() {
-        return "STANDINGS TABLE";
+        return this.props.value;
     }
 }
 
-class StandingsTable extends React.Component {
+interface StandingsTableProps {
+    players: string[],
+    results: string,
+    onClickRegion: (region: string) => void,
+    onClickGroup: (group: string) => void
+}
+
+class StandingsTable extends React.Component<StandingsTableProps> {
     render() {
+        const { players, results } = this.props;
+        
         return (
             <div>
                 <div className="table-selector">
-                    <TableSelector />
+                    <TableSelector 
+                        onClickRegion={(region) => this.props.onClickRegion(region)}
+                        onClickGroup={(group) => this.props.onClickGroup(group)}
+                    />
                 </div>
                 <div className="table-display">
-                    <TableDisplay />
+                    <TableDisplay value={players.join(' ') + " \n" + results}/>
                 </div>
 
             </div>
