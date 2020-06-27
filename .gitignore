@@ -21,3 +21,6 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+src/drafts.js
+src/__mocks__/hsgmdata.json
+src/data/sum.js

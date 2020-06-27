@@ -11,7 +11,7 @@ interface MainState {
     players: string[]
     matches: string[][];
     results: number[][];
-    matchWasPlayed: number[];
+    matchWasPlayed: (number|null)[];
 }
 
 class Main extends React.Component<{},MainState> {
@@ -26,7 +26,7 @@ class Main extends React.Component<{},MainState> {
             groupToDisplay: defaultGroup,
             players: players,
             matches: matches,
-            results: Array(players.length).fill(null).map(()=>(Array(players.length).fill(0))),
+            results: Array(players.length).fill(0).map(()=>(Array(players.length).fill(0))),
             matchWasPlayed: Array(matches.length).fill(null)
         }
     }
@@ -46,7 +46,7 @@ class Main extends React.Component<{},MainState> {
             this.setState({
                 // reset view
                 groupToDisplay: 'A',
-                results: Array(players.length).fill(null).map(() => (Array(players.length).fill(0))),
+                results: Array(players.length).fill(0).map(() => (Array(players.length).fill(0))),
                 matchWasPlayed: Array(matches.length).fill(null),
                 // update info
                 regionToDisplay: region,
@@ -63,7 +63,7 @@ class Main extends React.Component<{},MainState> {
             const matches = selectMatches(players);
             this.setState({
                 // reset view
-                results: Array(players.length).fill(null).map(() => (Array(players.length).fill(0))),
+                results: Array(players.length).fill(0).map(() => (Array(players.length).fill(0))),
                 matchWasPlayed: Array(matches.length).fill(null),
                 // update info
                 groupToDisplay: group ,
@@ -74,27 +74,41 @@ class Main extends React.Component<{},MainState> {
     }
 
     handleClickMatch = (mIndex: number, wIndex: number) => {
+        // setup
         const { players, results, matches, matchWasPlayed } = this.state;
-        if (matchWasPlayed[mIndex] != null && matchWasPlayed[mIndex] === wIndex) {
-            return
-        } 
-        // else, new results or change in result
-        // update results
-        const playerDir = players.reduce((acc: any, cur:string, idx: number) => {
+        // playerDir maps the name to the index in [0..players.length-1]
+        const playerDir = players.reduce((acc: any, cur: string, idx: number) => {
             acc[cur] = idx;
             return acc;
         }, {});
-        const newResults = results.slice();
+        // trueWIndex and trueLindex in [0..players.length-1] 
         const trueWIndex = playerDir[matches[mIndex][wIndex]];
         const trueLIndex = playerDir[matches[mIndex][+!wIndex]];;
-        newResults[trueWIndex][trueLIndex] = 1;
-        newResults[trueLIndex][trueWIndex] = 0;
-        // update matchWasPlayed
-        const newMWP = matchWasPlayed.slice();
-        newMWP[mIndex] = wIndex;
+        // objects for new state
+        const newResults = results.slice();
+        const newMatchWasPlayed = matchWasPlayed.slice();
+
+        // state changes
+        // a result for this match was already input
+        if (matchWasPlayed[mIndex] != null) {
+            // the same button is clicked twice (i.e. unclicked) -> revert changes
+            if (matchWasPlayed[mIndex] === wIndex) {    
+                newResults[trueWIndex][trueLIndex] -= 1;
+                newMatchWasPlayed[mIndex] = null;
+             // the other match is chosen -> update changes accordingly
+            } else {
+                newResults[trueLIndex][trueWIndex] -= 1;
+                newResults[trueWIndex][trueLIndex] += 1;
+                newMatchWasPlayed[mIndex] = wIndex;
+            }
+        // if no result was recorded
+        } else {
+                newResults[trueWIndex][trueLIndex] += 1;
+                newMatchWasPlayed[mIndex] = wIndex;
+        }
         this.setState({
             results: newResults,
-            matchWasPlayed: newMWP
+            matchWasPlayed: newMatchWasPlayed,
         });
     }
 
