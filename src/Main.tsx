@@ -10,7 +10,8 @@ interface MainState {
     groupToDisplay: string;
     players: string[]
     matches: string[][];
-    results: string;
+    results: number[][];
+    matchWasPlayed: (number|null)[];
 }
 
 class Main extends React.Component<{},MainState> {
@@ -19,26 +20,38 @@ class Main extends React.Component<{},MainState> {
         const defaultRegion = "APAC";
         const defaultGroup = "A";
         const players = selectPlayers(defaultRegion, defaultGroup);
+        const matches = selectMatches(players);
         this.state = {
             regionToDisplay: defaultRegion,
             groupToDisplay: defaultGroup,
             players: players,
-            matches: selectMatches(players),
-            results: ""
+            matches: matches,
+            results: Array(players.length).fill(0).map(()=>(Array(players.length).fill(0))),
+            matchWasPlayed: Array(matches.length).fill(null)
         }
+    }
+
+    componentDidMount() {
+        console.log(this.state.results);
+    }
+
+    componentDidUpdate() {
+        console.log(this.state.results);
     }
 
     handleClickRegion = (region: string) => {
         if (this.state.regionToDisplay !== region) {
             const players = selectPlayers(region, 'A');
+            const matches = selectMatches(players);
             this.setState({
                 // reset view
                 groupToDisplay: 'A',
-                results: "",
+                results: Array(players.length).fill(0).map(() => (Array(players.length).fill(0))),
+                matchWasPlayed: Array(matches.length).fill(null),
                 // update info
                 regionToDisplay: region,
                 players: players,
-                matches: selectMatches(players),
+                matches: matches
 
             });
         }
@@ -47,24 +60,55 @@ class Main extends React.Component<{},MainState> {
     handleClickGroup = (group: string) => {
         if (this.state.groupToDisplay !== group) {
             const players = selectPlayers(this.state.regionToDisplay, group);
-            this.setState({ 
+            const matches = selectMatches(players);
+            this.setState({
                 // reset view
-                results: "",
+                results: Array(players.length).fill(0).map(() => (Array(players.length).fill(0))),
+                matchWasPlayed: Array(matches.length).fill(null),
                 // update info
                 groupToDisplay: group ,
                 players: players,
-                matches: selectMatches(players),
+                matches: matches,
             });
         }
     }
 
     handleClickMatch = (mIndex: number, wIndex: number) => {
-        const { results, matches } = this.state;
+        // setup
+        const { players, results, matches, matchWasPlayed } = this.state;
+        // playerDir maps the name to the index in [0..players.length-1]
+        const playerDir = players.reduce((acc: any, cur: string, idx: number) => {
+            acc[cur] = idx;
+            return acc;
+        }, {});
+        // trueWIndex and trueLindex in [0..players.length-1] 
+        const trueWIndex = playerDir[matches[mIndex][wIndex]];
+        const trueLIndex = playerDir[matches[mIndex][+!wIndex]];;
+        // objects for new state
+        const newResults = results.slice();
+        const newMatchWasPlayed = matchWasPlayed.slice();
+
+        // state changes
+        // a result for this match was already input
+        if (matchWasPlayed[mIndex] != null) {
+            // the same button is clicked twice (i.e. unclicked) -> revert changes
+            if (matchWasPlayed[mIndex] === wIndex) {    
+                newResults[trueWIndex][trueLIndex] -= 1;
+                newMatchWasPlayed[mIndex] = null;
+             // the other match is chosen -> update changes accordingly
+            } else {
+                newResults[trueLIndex][trueWIndex] -= 1;
+                newResults[trueWIndex][trueLIndex] += 1;
+                newMatchWasPlayed[mIndex] = wIndex;
+            }
+        // if no result was recorded
+        } else {
+                newResults[trueWIndex][trueLIndex] += 1;
+                newMatchWasPlayed[mIndex] = wIndex;
+        }
         this.setState({
-            results: 
-                results + 
-                matches[mIndex][wIndex] + " beat " + 
-                matches[mIndex][+!wIndex] + ". \n"
+            results: newResults,
+            matchWasPlayed: newMatchWasPlayed,
         });
     }
 
@@ -98,7 +142,7 @@ export default Main;
 
 const allPlayers = {
     APAC: {
-        divA: ['glory', 'Surrender', 'Posesi'],
+        divA: ['glory', 'Surrender', 'Posesi', 'Ryvius', 'Alutemu'],
         divB: ['Staz', 'tom60229', 'blitzchung']
     },
     EU: {
