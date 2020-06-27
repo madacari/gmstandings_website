@@ -10,7 +10,8 @@ interface MainState {
     groupToDisplay: string;
     players: string[]
     matches: string[][];
-    results: string;
+    results: number[][];
+    matchWasPlayed: number[];
 }
 
 class Main extends React.Component<{},MainState> {
@@ -19,26 +20,38 @@ class Main extends React.Component<{},MainState> {
         const defaultRegion = "APAC";
         const defaultGroup = "A";
         const players = selectPlayers(defaultRegion, defaultGroup);
+        const matches = selectMatches(players);
         this.state = {
             regionToDisplay: defaultRegion,
             groupToDisplay: defaultGroup,
             players: players,
-            matches: selectMatches(players),
-            results: ""
+            matches: matches,
+            results: Array(players.length).fill(null).map(()=>(Array(players.length).fill(0))),
+            matchWasPlayed: Array(matches.length).fill(null)
         }
+    }
+
+    componentDidMount() {
+        console.log(this.state.results);
+    }
+
+    componentDidUpdate() {
+        console.log(this.state.results);
     }
 
     handleClickRegion = (region: string) => {
         if (this.state.regionToDisplay !== region) {
             const players = selectPlayers(region, 'A');
+            const matches = selectMatches(players);
             this.setState({
                 // reset view
                 groupToDisplay: 'A',
-                results: "",
+                results: Array(players.length).fill(null).map(() => (Array(players.length).fill(0))),
+                matchWasPlayed: Array(matches.length).fill(null),
                 // update info
                 regionToDisplay: region,
                 players: players,
-                matches: selectMatches(players),
+                matches: matches
 
             });
         }
@@ -47,24 +60,41 @@ class Main extends React.Component<{},MainState> {
     handleClickGroup = (group: string) => {
         if (this.state.groupToDisplay !== group) {
             const players = selectPlayers(this.state.regionToDisplay, group);
-            this.setState({ 
+            const matches = selectMatches(players);
+            this.setState({
                 // reset view
-                results: "",
+                results: Array(players.length).fill(null).map(() => (Array(players.length).fill(0))),
+                matchWasPlayed: Array(matches.length).fill(null),
                 // update info
                 groupToDisplay: group ,
                 players: players,
-                matches: selectMatches(players),
+                matches: matches,
             });
         }
     }
 
     handleClickMatch = (mIndex: number, wIndex: number) => {
-        const { results, matches } = this.state;
+        const { players, results, matches, matchWasPlayed } = this.state;
+        if (matchWasPlayed[mIndex] != null && matchWasPlayed[mIndex] === wIndex) {
+            return
+        } 
+        // else, new results or change in result
+        // update results
+        const playerDir = players.reduce((acc: any, cur:string, idx: number) => {
+            acc[cur] = idx;
+            return acc;
+        }, {});
+        const newResults = results.slice();
+        const trueWIndex = playerDir[matches[mIndex][wIndex]];
+        const trueLIndex = playerDir[matches[mIndex][+!wIndex]];;
+        newResults[trueWIndex][trueLIndex] = 1;
+        newResults[trueLIndex][trueWIndex] = 0;
+        // update matchWasPlayed
+        const newMWP = matchWasPlayed.slice();
+        newMWP[mIndex] = wIndex;
         this.setState({
-            results: 
-                results + 
-                matches[mIndex][wIndex] + " beat " + 
-                matches[mIndex][+!wIndex] + ". \n"
+            results: newResults,
+            matchWasPlayed: newMWP
         });
     }
 
@@ -98,7 +128,7 @@ export default Main;
 
 const allPlayers = {
     APAC: {
-        divA: ['glory', 'Surrender', 'Posesi'],
+        divA: ['glory', 'Surrender', 'Posesi', 'Ryvius', 'Alutemu'],
         divB: ['Staz', 'tom60229', 'blitzchung']
     },
     EU: {
