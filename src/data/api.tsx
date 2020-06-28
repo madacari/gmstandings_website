@@ -8,7 +8,7 @@ interface ParamsType {
 }
 
 const getPlayers = async (region: string, group: string, params?: ParamsType)  => {
-    const rep = await axios.get(url).then( response => {
+    const rep = await axios.get(url, ).then( response => {
         return getPlayersAux(response.data, region, group);
     })
     return rep;

@@ -31,21 +31,34 @@ class Main extends React.Component<{},MainState> {
     }
 
     componentDidMount() {
-        console.log(this.state.results);
-        const players = selectPlayers(this.state.regionToDisplay, this.state.groupToDisplay);
-        const matches = selectMatches(players);
-        const results = Array(players.length).fill(0).map(() => (Array(players.length).fill(0)));
-        const matchWasPlayed = Array(matches.length).fill(null);
-        this.setState({
-            players: players,
-            matches: matches,
-            results: results,
-            matchWasPlayed: matchWasPlayed
+        console.log("INIT", this.state.results);
+        Api.getPlayers(this.state.regionToDisplay, this.state.groupToDisplay).then((response) => {
+            const players = response.players;
+            const matches = selectMatches(players);
+            const results = Array(players.length).fill(0).map(() => (Array(players.length).fill(0)));
+            const matchWasPlayed = Array(matches.length).fill(null);
+            this.setState({
+                players: players,
+                matches: matches,
+                results: results,
+                matchWasPlayed: matchWasPlayed
+            });
+        }).catch(error => {
+            console.error(error);
         })
+        // const players = selectPlayers(this.state.regionToDisplay, this.state.groupToDisplay);
+        // const matches = selectMatches(players);
+        // const results = Array(players.length).fill(0).map(() => (Array(players.length).fill(0)));
+        // const matchWasPlayed = Array(matches.length).fill(null);
+        // this.setState({
+        //     matches: matches,
+        //     results: results,
+        //     matchWasPlayed: matchWasPlayed
+        // })
     }
 
     componentDidUpdate() {
-        console.log(this.state.results);
+        console.log("UPDATE", this.state.results);
     }
 
     handleClickRegion = (region: string) => {
