@@ -58,10 +58,7 @@ function getPlayersAux(data: any, region: string, group: string) {
         stage: stage.title,
         group: bracket.name,
         players: bracket.competitors.map((competitor: any) => {
-            return {
-                id: competitor.competitor.id,
-                name: competitor.competitor.name
-            };
+            return competitor.competitor.name
         })
 
     }

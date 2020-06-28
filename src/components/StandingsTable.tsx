@@ -13,6 +13,8 @@ interface StandingsTableProps {
 class StandingsTable extends React.Component<StandingsTableProps> {
     render() {
         const { players, results } = this.props;
+        const dataReady = (Array.isArray(players) && players.length) &&
+            (Array.isArray(results) && results.length)
         
         return (
             <div>
@@ -22,9 +24,10 @@ class StandingsTable extends React.Component<StandingsTableProps> {
                         onClickGroup={(group) => this.props.onClickGroup(group)}
                     />
                 </div>
+                { dataReady ?
                 <div className="table-display">
                     <TableDisplay players={players} results={results}/>
-                </div>
+                </div> : <div>Loading data...</div> }
 
             </div>
         );
