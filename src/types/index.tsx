@@ -1,18 +1,34 @@
-type Groups = {
+// Regions and groups
+export enum RegionType {
+    NA = 'NA',
+    APAC = 'APAC', 
+    EU = 'EU'
+}
+
+export enum GroupType {
+    A = 'A',
+    B = 'B'
+}
+
+export type TableSelectorType = RegionType | GroupType;
+
+// Other
+
+type GroupMembers = {
     divA: string[],
     divB: string[]
 }
 
 type NAPlayers = {
-    NA: Groups
+    NA: GroupMembers
 }
 
 type EUPlayers = {
-    EU: Groups
+    EU: GroupMembers
 }
 
 type APACPlayers = {
-    APAC: Groups
+    APAC: GroupMembers
 }
 
 type TableFormat = {

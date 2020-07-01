@@ -1,8 +1,14 @@
 import React from "react";
+import { connect } from 'react-redux';
+import { selectMatchWinner } from "../store/actions";
 
 interface MatchSelectorProps {
     matches: string[][];
-    onClickMatch: (mIndex: number, pIndex: number) => void
+    onClickMatch: (matchIndex: number, pIndex: number) => void
+}
+
+interface MatchSelectorState {
+    
 }
 
 class MatchSelector extends React.Component<MatchSelectorProps> {
@@ -15,10 +21,10 @@ class MatchSelector extends React.Component<MatchSelectorProps> {
         return (
             <div>
                 {
-                matches.map((match: string[], mIndex: number) => 
-                    <div className={`match-${mIndex}-buttons`}>
+                matches.map((match: string[], matchIndex: number) => 
+                    <div className={`match-${matchIndex}-buttons`}>
                         {match.map((player: string ,pIndex:number) =>
-                                <button onClick={() => this.props.onClickMatch(mIndex, pIndex)}>
+                                <button onClick={() => this.props.onClickMatch(matchIndex, pIndex)}>
                                     {player}
                                 </button>
                         )}
@@ -29,4 +35,4 @@ class MatchSelector extends React.Component<MatchSelectorProps> {
     }
 }
 
-export default MatchSelector;
+export default connect(null, { selectMatchWinner })(MatchSelector);
