@@ -4,11 +4,12 @@ import StandingsTable from './components/StandingsTable';
 import './Main.css';
 // import { Players } from './types/index'
 import { Api } from './data/api'
+import { RegionType, GroupType } from './types';
 
 
 interface MainState {
-    regionToDisplay: string;
-    groupToDisplay: string;
+    regionToDisplay: RegionType;
+    groupToDisplay: GroupType;
     players: string[]
     matches: string[][];
     results: number[][];
@@ -18,8 +19,8 @@ interface MainState {
 class Main extends React.Component<{},MainState> {
     constructor(props: {}) {
         super(props);
-        const defaultRegion = "APAC";
-        const defaultGroup = "A";
+        const defaultRegion = RegionType.APAC;
+        const defaultGroup = GroupType.A;
         this.state = {
             regionToDisplay: defaultRegion,
             groupToDisplay: defaultGroup,
@@ -61,13 +62,13 @@ class Main extends React.Component<{},MainState> {
         console.log("UPDATE", this.state.results);
     }
 
-    handleClickRegion = (region: string) => {
+    handleClickRegion = (region: RegionType) => {
         if (this.state.regionToDisplay !== region) {
-            const players = selectPlayers(region, 'A');
+            const players = selectPlayers(region, GroupType.A);
             const matches = selectMatches(players);
             this.setState({
                 // reset view
-                groupToDisplay: 'A',
+                groupToDisplay: GroupType.A,
                 results: Array(players.length).fill(0).map(() => (Array(players.length).fill(0))),
                 matchWasPlayed: Array(matches.length).fill(null),
                 // update info
@@ -79,7 +80,7 @@ class Main extends React.Component<{},MainState> {
         }
     }
 
-    handleClickGroup = (group: string) => {
+    handleClickGroup = (group: GroupType) => {
         if (this.state.groupToDisplay !== group) {
             const players = selectPlayers(this.state.regionToDisplay, group);
             const matches = selectMatches(players);
@@ -177,14 +178,14 @@ const allPlayers = {
     },
 }
 
-function selectPlayers(regionToDisplay: string, groupToDisplay: string): string[] {
+function selectPlayers(regionToDisplay: RegionType, groupToDisplay: GroupType): string[] {
     // Choose region
     let playerReg;
     switch (regionToDisplay) {
-        case "NA":
+        case RegionType.NA:
             playerReg = allPlayers.NA;
             break;
-        case "EU":
+        case RegionType.EU:
             playerReg = allPlayers.EU;
             break;
         default:
@@ -193,7 +194,7 @@ function selectPlayers(regionToDisplay: string, groupToDisplay: string): string[
     // Choose group
     let players;
     switch (groupToDisplay) {
-        case "B":
+        case GroupType.B:
             players = playerReg.divB;
             break;
         default:

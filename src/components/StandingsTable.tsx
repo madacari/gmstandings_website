@@ -2,12 +2,13 @@ import React from 'react';
 import TableDisplay from './TableDisplay';
 import TableSelector from './TableSelector';
 import './StandingsTable.css';
+import { RegionType, GroupType } from '../types';
 
 interface StandingsTableProps {
     players: string[],
     results: number[][],
-    onClickRegion: (region: string) => void,
-    onClickGroup: (group: string) => void
+    onClickRegion: (region: RegionType) => void,
+    onClickGroup: (group: GroupType) => void
 }
 
 class StandingsTable extends React.Component<StandingsTableProps> {

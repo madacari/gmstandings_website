@@ -1,11 +1,12 @@
 import React from 'react';
+import { TableSelectorType } from '../types';
 
 // Selectors
 
 interface SelectorProps {
     type: string;
-    options: string[];
-    onClick: (option: string) => void;
+    options: TableSelectorType[];
+    onClick: (option: TableSelectorType) => void;
 }
 
 class Selector extends React.Component<SelectorProps> {

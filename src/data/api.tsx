@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { RegionType, GroupType } from '../types';
 
 const url = 'https://playhearthstone.com/en-us/api/esports/schedule/grandmasters/';
 
@@ -7,14 +8,14 @@ interface ParamsType {
     season: number,
 }
 
-const getPlayers = async (region: string, group: string, params?: ParamsType)  => {
+const getPlayers = async (region: RegionType, group: GroupType, params?: ParamsType)  => {
     const rep = await axios.get(url, ).then( response => {
         return getPlayersAux(response.data, region, group);
     })
     return rep;
 }
 
-const getResults = async (region: string, group: string, params?: ParamsType) => {
+const getResults = async (region: RegionType, group: GroupType, params?: ParamsType) => {
     const rep = await axios.get(url).then(response => {
         return getResultsAux(response.data, region, group);
     })
@@ -28,16 +29,16 @@ export const Api = {
 
 // 
 
-function getStageData(data: any, region: string, group: string, stageNum: number = 3) {
+function getStageData(data: any, region: RegionType, group: GroupType, stageNum: number = 3) {
     let reg_ix: number;
     switch (region) {
-        case 'APAC':
+        case RegionType.APAC:
             reg_ix = 1;
             break;
-        case 'EU':
+        case RegionType.EU:
             reg_ix = 2;
             break;
-        case 'NA':
+        case RegionType.NA:
             reg_ix = 0;
             break;
         default:
@@ -46,11 +47,11 @@ function getStageData(data: any, region: string, group: string, stageNum: number
     // Disclaimer: the current functionality only cares about Round Robin stage
     const tournament = data.requestedSeasonTournaments[reg_ix];
     const stage = tournament.stages[stageNum];
-    const bracket = stage.brackets[group === 'A' ? 0 : 1]
+    const bracket = stage.brackets[group === GroupType.A ? 0 : 1]
     return {tournament, stage, bracket}
 }
 
-function getPlayersAux(data: any, region: string, group: string) {
+function getPlayersAux(data: any, region: RegionType, group: GroupType) {
     const {tournament, stage, bracket} = getStageData(data, region, group);
     const dataRes = {
         title: tournament.title,
@@ -65,7 +66,7 @@ function getPlayersAux(data: any, region: string, group: string) {
     return dataRes;
 }
 
-function getResultsAux(data: any, region: string, group: string) {
+function getResultsAux(data: any, region: RegionType, group: GroupType) {
     const { bracket } = getStageData(data, region, group);
     const dataRes = bracket.matches.map( (match: any) => {
             return {
