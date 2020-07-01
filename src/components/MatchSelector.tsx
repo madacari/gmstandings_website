@@ -7,9 +7,9 @@ interface MatchSelectorProps {
     onClickMatch: (matchIndex: number, pIndex: number) => void
 }
 
-interface MatchSelectorState {
-    
-}
+// interface MatchSelectorState {
+//     type:
+// }
 
 class MatchSelector extends React.Component<MatchSelectorProps> {
 

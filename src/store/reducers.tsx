@@ -1,13 +1,42 @@
 import { MainState, initialState, SELECT_MATCH_WINNNER } from "./types";
 // import { RegionType, GroupType, } from "../types";
 import { SelectionActionTypes, SELECT_REGION, SELECT_GROUP, MatchWinnerSelection } from "./types";
+import { selectPlayers, selectMatches } from "../utils";
+import { GroupType } from "../types";
 
 export function gmstandingsReducer(state: MainState = initialState, action: SelectionActionTypes|MatchWinnerSelection): MainState {
     switch (action.type) {
-        // case SELECT_REGION:
-            // return {...state, regionToDisplay: action.region};
-        // case SELECT_GROUP:
-            // return {...state, groupToDisplay: action.group};
+        case SELECT_REGION:
+            if (state.regionToDisplay !== action.region) {
+                const group = GroupType.A;
+                const players = selectPlayers(action.region, group);
+                const matches = selectMatches(players);
+                return {...state, 
+                    regionToDisplay: action.region,
+                    groupToDisplay: group,
+                    players: players,
+                    matches: matches,
+                    results: Array(players.length).fill(0).map(() => (Array(players.length).fill(0))),
+                    matchWasPlayed: Array(matches.length).fill(null),
+                };
+            } else {
+                return state;
+            }
+        case SELECT_GROUP:
+            if (state.groupToDisplay !== action.group) {
+                const players = selectPlayers(state.regionToDisplay, action.group);
+                const matches = selectMatches(players);
+                return {
+                    ...state,
+                    groupToDisplay: action.group,
+                    players: players,
+                    matches: matches,
+                    results: Array(players.length).fill(0).map(() => (Array(players.length).fill(0))),
+                    matchWasPlayed: Array(matches.length).fill(null),
+                };
+            } else {
+                return state;
+            }
         case SELECT_MATCH_WINNNER:
             const { players, results, matches, matchWasPlayed } = state;
             const playerDir = players.reduce((acc: any, cur: string, idx: number) => {

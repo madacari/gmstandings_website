@@ -1,33 +1,22 @@
 import React from 'react';
-import TableDisplay from './TableDisplay';
-import TableSelector from './TableSelector';
+import { TableDisplay } from '.';
+import { TableSelector } from '.';
 import './StandingsTable.css';
-import { RegionType, GroupType } from '../types';
 
 interface StandingsTableProps {
-    players: string[],
-    results: number[][],
-    onClickRegion: (region: RegionType) => void,
-    onClickGroup: (group: GroupType) => void
+    dataReady: boolean;
 }
 
 class StandingsTable extends React.Component<StandingsTableProps> {
     render() {
-        const { players, results } = this.props;
-        const dataReady = (Array.isArray(players) && players.length) &&
-            (Array.isArray(results) && results.length)
-        
         return (
             <div>
                 <div className="table-selector">
-                    <TableSelector 
-                        onClickRegion={(region) => this.props.onClickRegion(region)}
-                        onClickGroup={(group) => this.props.onClickGroup(group)}
-                    />
+                    <TableSelector />
                 </div>
-                { dataReady ?
+                { this.props.dataReady ?
                 <div className="table-display">
-                    <TableDisplay players={players} results={results}/>
+                    <TableDisplay />
                 </div> : <div>Loading data...</div> }
 
             </div>
