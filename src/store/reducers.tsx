@@ -11,6 +11,7 @@ export function gmstandingsReducer(state: MainState = initialState, action: Acti
         case ActionTypes.FETCH_DATA_FROM_GROUP_REQUEST:
         case ActionTypes.FETCH_DATA_FROM_GROUP_SUCCESS:
         case ActionTypes.FETCH_DATA_FROM_GROUP_FAILURE:
+        case ActionTypes.FETCH_DATA_REQUEST:
             return state
         case ActionTypes.FETCH_DATA_SUCCESS:
             return {

@@ -2,6 +2,7 @@ import axios from 'axios';
 import { RegionType, GroupType } from '../types';
 
 const url = 'https://playhearthstone.com/en-us/api/esports/schedule/grandmasters/';
+const public_path = `/hsgmdata.json`;
 
 interface ParamsType {
     year: number,
@@ -15,6 +16,13 @@ const getPlayers = async (region: RegionType, group: GroupType, params?: ParamsT
     return rep;
 }
 
+const fakeGetPlayers = async (region: RegionType, group: GroupType) => {
+    const rep = await axios.get(public_path).then(response => {
+        return getPlayersAux(response.data, region, group);
+    });
+    return rep;
+}
+
 const getResults = async (region: RegionType, group: GroupType, params?: ParamsType) => {
     const rep = await axios.get(url).then(response => {
         return getResultsAux(response.data, region, group);
@@ -22,9 +30,19 @@ const getResults = async (region: RegionType, group: GroupType, params?: ParamsT
     return rep;
 }
 
+const fakeGetResults = async (region: RegionType, group: GroupType) => {
+    const rep = await axios.get(public_path).then(response => {
+        return getResultsAux(response.data, region, group);
+    });
+    return rep;
+}
+
 export const Api = {
     getPlayers,
-    getResults
+    getResults,
+
+    fakeGetPlayers,
+    fakeGetResults,
 };
 
 // 
@@ -71,24 +89,21 @@ function getResultsAux(data: any, region: RegionType, group: GroupType) {
     const dataRes = bracket.matches.map( (match: any) => {
             return {
                 player1: { 
-                    id: match.competitors[0].id,
                     name: match.competitors[0].name,
                     },
                 player2: {
-                    id: match.competitors[1].id,
                     name: match.competitors[1].name,
                 },
-                // not needed for round robin matches
+                // scores not needed for round robin matches
                 // scores: match.scores,
+                // to differentiate fixtures from results check winner != null
                 winner: {
-                    id: match.winner.id,
                     name: match.winner.name
                 },
-                // to differentiate fixtures from results check winner != null
-                // status: match.status,
                 timeZone: match.timeZone,
                 startDate: match.startDate
             }
         })
+    dataRes.sort((a: any, b: any) => a.startDate - b.startDate);
     return dataRes;
 }

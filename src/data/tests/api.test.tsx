@@ -1,6 +1,5 @@
 import { Api } from '../api'
 import { RegionType, GroupType } from '../../types';
-// import mockAxios from 'axios';
 
 jest.mock('axios');
 // jest.unmock('axios');

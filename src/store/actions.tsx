@@ -29,6 +29,7 @@ export const ACTIONS = {
     fetchDataFromGroupSuccess: () => createAction(ActionTypes.FETCH_DATA_FROM_GROUP_SUCCESS, ),
     fetchDataFromGroupFailure: () => createAction(ActionTypes.FETCH_DATA_FROM_GROUP_FAILURE),
 
+    fetchDataRequest: () => createAction(ActionTypes.FETCH_DATA_REQUEST),
     fetchDataSuccess: (payload: FetchDataSuccessPayload) => createAction(ActionTypes.FETCH_DATA_SUCCESS, payload),
 
     selectRegion: (payload: RegionRequestPayload) => createAction(ActionTypes.SELECT_REGION, payload),
