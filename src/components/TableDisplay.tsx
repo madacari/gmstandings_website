@@ -65,6 +65,7 @@ class TableDisplay extends React.Component<TableDisplayProps> {
         return (
             <div>
                 <h3 id='title'>Grandmaster Standings</h3>
+                <h6>(as they were before week 4)</h6>
                 <table id='players'>
                     <tbody>
                         <tr>{renderTableHeader}</tr>

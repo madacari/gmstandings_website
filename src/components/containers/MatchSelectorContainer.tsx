@@ -1,12 +1,14 @@
 import { connect } from 'react-redux';
 
 import MatchSelector from '../MatchSelector';
-import { MainState } from '../../store/types';
+import { MainState, MatchType } from '../../store/types';
 import { ACTIONS } from '../../store/actions';
 
 const mapStateToProps = (state: MainState) => {
     return {
-        matches: state.matches
+        matches: state.matchesToDisplay.map((match:MatchType) => {
+            return [match.player1.name, match.player2.name];
+        })
     }
 }
 

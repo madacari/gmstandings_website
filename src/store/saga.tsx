@@ -1,26 +1,27 @@
 import { call, put, takeLatest, select, all } from 'redux-saga/effects'
 import { Api } from '../data/api'
 import { getCurrentRegion, getCurrentGroup } from './selectors';
-import {  selectMatches } from '../utils';
 import { ACTIONS } from './actions';
-import { ActionTypes } from './types';
+import { ActionTypes, MatchType } from './types';
 
 function* fetchDataRequest() {
     try {
         const currentRegion = yield select(getCurrentRegion);
         const currentGroup = yield select(getCurrentGroup);
+        
         const playersData = yield call(Api.fakeGetPlayers, currentRegion, currentGroup);
         const players = playersData.players;
-        const matches = selectMatches(players);
-        // console.log('feching players');
-        // const playersData = yield call(Api.fakeGetPlayers, selectedRegion, GroupType.A);
-        // const players = playersData.players;
-        // console.log(players)
-        // const resultsData = yield call(Api.fakeGetResults,selectedRegion, GroupType.A);
-        // const allMatches = resultsData.filter()
+        const playerDir = players.reduce((acc: any, cur: string, idx: number) => {
+            acc[cur] = idx;
+            return acc;
+        }, {});
 
-        // const players = selectPlayers(selectedRegion, GroupType.A);
-        yield put(ACTIONS.fetchDataSuccess({ players: players, matches: matches }))
+        const allMatches = yield call(Api.fakeGetResults, currentRegion, currentGroup);
+        const matchesLeft = allMatches.filter(matchLeftToPlay);
+        const playedMatches = allMatches.filter(matchPlayed);
+        yield put(ACTIONS.fetchDataSuccess({ players: players, playerDir: playerDir, matchesToDisplay: matchesLeft,  }))
+        // requires playerDir
+        yield put(ACTIONS.fillTable({ playedMatches: playedMatches}))
     } catch (error) {
         console.error("Error:", error);
     }
@@ -68,3 +69,16 @@ function* gmstandingsSaga() {
 }
 
 export default gmstandingsSaga;
+
+// helpers
+
+// artificially simulating an ongoing competition
+const LIMIT = 21;
+
+function matchPlayed(match: MatchType, index: number) {
+    return (match.winner !== undefined) && (index < LIMIT);
+}
+
+function matchLeftToPlay(match: MatchType, index: number) {
+    return (match.winner === undefined) || (index >= LIMIT);
+}

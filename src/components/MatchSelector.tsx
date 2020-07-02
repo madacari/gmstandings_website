@@ -6,11 +6,11 @@ interface MatchSelectorProps {
 }
 
 class MatchSelector extends React.Component<MatchSelectorProps> {
-
     render() {
         const matches = this.props.matches
         return (
             <div>
+                <h4>Matches left</h4>
                 {
                 matches.map((match: string[], matchIndex: number) => 
                     <div className={`match-${matchIndex}-buttons`}>

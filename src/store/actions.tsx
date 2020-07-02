@@ -1,6 +1,6 @@
 // https://github.com/sebastien-lb/alfred-face/blob/master/src/store/utils.ts
 
-import { RegionRequestPayload, ActionTypes, FetchDataSuccessPayload, GroupRequestPayload, MatchWinnerPayload } from "./types";
+import { RegionRequestPayload, ActionTypes, FetchDataSuccessPayload, GroupRequestPayload, MatchWinnerPayload, TableFillPayload } from "./types";
 import { ActionCreatorsMapObject } from 'redux';
 
 // action creator types
@@ -35,7 +35,9 @@ export const ACTIONS = {
     selectRegion: (payload: RegionRequestPayload) => createAction(ActionTypes.SELECT_REGION, payload),
     selectGroup: (payload: GroupRequestPayload) => createAction(ActionTypes.SELECT_GROUP, payload),
 
-    selectMatchWinner: (payload: MatchWinnerPayload) => createAction(ActionTypes.SELECT_MATCH_WINNNER, payload)
+    selectMatchWinner: (payload: MatchWinnerPayload) => createAction(ActionTypes.SELECT_MATCH_WINNNER, payload),
+
+    fillTable: (payload: TableFillPayload) => createAction(ActionTypes.FILL_TABLE, payload),
 }
 
 export type ActionsUnion<A extends ActionCreatorsMapObject> = ReturnType<A[keyof A]>;

@@ -1,9 +1,11 @@
-import { MainState, initialState, ActionTypes } from "./types";
+import { MainState, initialState, ActionTypes, MatchType } from "./types";
 import { Actions } from "./actions";
 import { GroupType } from "../types";
 
 
 export function gmstandingsReducer(state: MainState = initialState, action: Actions): MainState {
+    const { playerDir, results, matchesToDisplay, matchWasPlayed } = state;
+
     switch (action.type) {
         case ActionTypes.FETCH_DATA_FROM_REGION_REQUEST:
         case ActionTypes.FETCH_DATA_FROM_REGION_SUCCESS:
@@ -17,10 +19,12 @@ export function gmstandingsReducer(state: MainState = initialState, action: Acti
             return {
                 ...state,
                 players: action.payload!.players,
-                matches: action.payload!.matches,
+                playerDir: action.payload!.playerDir,
+                matchesToDisplay: action.payload!.matchesToDisplay,
                 results: Array(action.payload!.players.length).fill(0).map(
                     () => (Array(action.payload!.players.length).fill(0))
                     ),
+                matchWasPlayed: Array(action.payload!.matchesToDisplay.length).fill(null)
 
             }
         case ActionTypes.SELECT_REGION:
@@ -34,16 +38,27 @@ export function gmstandingsReducer(state: MainState = initialState, action: Acti
                 ...state,
                 groupToDisplay: action.payload!.group,
             }
+        case ActionTypes.FILL_TABLE:
+            const playedMatches = action.payload!.playedMatches
+            // guarantee playedMatches.winner is defined
+            const pastResults = results.slice();
+            playedMatches.forEach((match: MatchType) => {
+                const winnerName = match.winner.name;
+                const loserName = winnerName === match.player1.name ? match.player2.name : match.player1.name;
+                const trueWIndex = playerDir[winnerName];
+                const trueLIndex = playerDir[loserName];
+                pastResults[trueWIndex][trueLIndex] += 1;
+            })
+            return {...state,
+                    results: pastResults,
+            }
         case ActionTypes.SELECT_MATCH_WINNNER:
-            const { players, results, matches, matchWasPlayed } = state;
-            const playerDir = players.reduce((acc: any, cur: string, idx: number) => {
-                acc[cur] = idx;
-                return acc;
-            }, {});
-
-            // trueaction.winnerIndex and trueLindex in [0..players.length-1] 
-            const trueWIndex = playerDir[matches[action.payload!.matchIndex][action.payload!.winnerIndex]];
-            const trueLIndex = playerDir[matches[action.payload!.matchIndex][+!action.payload!.winnerIndex]];;
+            const matchPlayed = matchesToDisplay[action.payload!.matchIndex]
+            const winnerName = action.payload!.winnerIndex ? matchPlayed.player2.name : matchPlayed.player1.name;
+            const loserName = action.payload!.winnerIndex ? matchPlayed.player1.name : matchPlayed.player2.name;
+            // console.log("Winner: ", winnerName, "|Loser: ", loserName);
+            const trueWIndex = playerDir[winnerName];
+            const trueLIndex = playerDir[loserName];
             // objects for new state
             const newResults = results.slice();
             const newMatchWasPlayed = matchWasPlayed.slice();
@@ -66,7 +81,7 @@ export function gmstandingsReducer(state: MainState = initialState, action: Acti
                 newResults[trueWIndex][trueLIndex] += 1;
                 newMatchWasPlayed[action.payload!.matchIndex] = action.payload!.winnerIndex;
             }
-            return { ...state, results: newResults, matchWasPlayed: newMatchWasPlayed };
+            return {...state, results: newResults, matchWasPlayed: newMatchWasPlayed };
         default:
             return state;
     }
