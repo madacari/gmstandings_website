@@ -2,23 +2,20 @@ import React from "react";
 
 interface MatchSelectorProps {
     matches: string[][];
-    onClickMatch: (mIndex: number, pIndex: number) => void
+    onClickMatch: (matchIndex: number, pIndex: number) => void
 }
 
 class MatchSelector extends React.Component<MatchSelectorProps> {
-
     render() {
         const matches = this.props.matches
-        // const defaultMatch = ["player 1", "player 2"];
-        // var matches = (new Array(5)).fill(defaultMatch);
-        
         return (
             <div>
+                <h4>Matches left</h4>
                 {
-                matches.map((match: string[], mIndex: number) => 
-                    <div className={`match-${mIndex}-buttons`}>
+                matches.map((match: string[], matchIndex: number) => 
+                    <div className={`match-${matchIndex}-buttons`}>
                         {match.map((player: string ,pIndex:number) =>
-                                <button onClick={() => this.props.onClickMatch(mIndex, pIndex)}>
+                                <button onClick={() => this.props.onClickMatch(matchIndex, pIndex)}>
                                     {player}
                                 </button>
                         )}

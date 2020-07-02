@@ -1,9 +1,10 @@
 import React from 'react';
 import Selector from './Selector';
+import { GroupType, RegionType } from '../types';
 
 interface TableSelectorProps {
-    onClickRegion: (region: string) => void;
-    onClickGroup: (group:string) => void;
+    onClickRegion: (region: RegionType) => void;
+    onClickGroup: (group:GroupType) => void;
 }
 
 class TableSelector extends React.Component<TableSelectorProps> {
@@ -13,15 +14,15 @@ class TableSelector extends React.Component<TableSelectorProps> {
                 <div className='region-selector'>
                     <Selector 
                         type="Region" 
-                        options={["APAC", "EU", "NA"]} 
-                        onClick={(region) => this.props.onClickRegion(region)}
+                        options={[RegionType.APAC, RegionType.EU, RegionType.NA]} 
+                        onClick={(region) => this.props.onClickRegion(region as RegionType)}
                     />
                 </div>
                 <div className='group-selector'>
                     <Selector 
                         type="Group" 
-                        options={["A", "B"]}
-                        onClick = {(group) => this.props.onClickGroup(group)}
+                        options={[GroupType.A, GroupType.B]}
+                        onClick = {(group) => this.props.onClickGroup(group as GroupType)}
                     />
                 </div>
             </div>
