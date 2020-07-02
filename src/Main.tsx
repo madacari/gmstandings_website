@@ -3,24 +3,24 @@ import { MatchSelector, StandingsTable } from './components';
 import './Main.css';
 // import { Players } from './types/index'
 // import { Api } from './data/api'
-import { RegionType, GroupType } from './types';
+// import { RegionType, GroupType } from './types';
 // import { selectMatches, selectPlayers } from './utils';
-import { MainState } from './store/types';
+// import { MainState } from './store/types';
 
-class Main extends React.Component< {}, MainState> {
-    constructor(props: {}) {
-        super(props);
-        const defaultRegion = RegionType.APAC;
-        const defaultGroup = GroupType.A;
-        this.state = {
-            regionToDisplay: defaultRegion,
-            groupToDisplay: defaultGroup,
-            players: [],
-            matches: [],
-            results: [],
-            matchWasPlayed: []
-        }
-    }
+class Main extends React.Component {
+    // constructor(props: {}) {
+    //     super(props);
+    //     const defaultRegion = RegionType.APAC;
+    //     const defaultGroup = GroupType.A;
+    //     this.state = {
+    //         regionToDisplay: defaultRegion,
+    //         groupToDisplay: defaultGroup,
+    //         players: [],
+    //         matches: [],
+    //         results: [],
+    //         matchWasPlayed: []
+    //     }
+    // }
 
     // componentDidMount() {
     //     console.log("INIT", this.state.results);

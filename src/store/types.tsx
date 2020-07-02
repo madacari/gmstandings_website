@@ -18,25 +18,39 @@ export const initialState: MainState = {
     matchWasPlayed: [],
 }
 
-export const SELECT_REGION = 'SELECT_REGION';
-export const SELECT_GROUP = 'SELECT_GROUP';
+export enum ActionTypes {
+    FETCH_DATA_FROM_REGION_REQUEST = 'FETCH_DATA_FROM_REGION_REQUEST',
+    FETCH_DATA_FROM_REGION_SUCCESS = 'FETCH_DATA_FROM_REGION_SUCCESS',
+    FETCH_DATA_FROM_REGION_FAILURE = 'FETCH_DATA_FROM_REGION_FAILURE',
 
-export interface RegionSelection {
-    type: typeof SELECT_REGION,
+    FETCH_DATA_FROM_GROUP_REQUEST = 'FETCH_DATA_FROM_GROUP_REQUEST',
+    FETCH_DATA_FROM_GROUP_SUCCESS = 'FETCH_DATA_FROM_GROUP_SUCCESS',
+    FETCH_DATA_FROM_GROUP_FAILURE = 'FETCH_DATA_FROM_GROUP_FAILURE',
+
+    FETCH_DATA_SUCCESS = 'FETCH_DATA_SUCCESS',
+
+    SELECT_REGION = 'SELECT_REGION',
+    SELECT_GROUP = 'SELECT_GROUP',
+
+    SELECT_MATCH_WINNNER = 'SELECT_MATCH_WINNER'
+}
+
+// Payload interfaces
+
+export interface RegionRequestPayload {
     region: RegionType
 }
 
-export interface GroupSelection {
-    type: typeof SELECT_GROUP,
+export interface GroupRequestPayload {
     group: GroupType
 }
 
-export type SelectionActionTypes = RegionSelection | GroupSelection;
+export interface FetchDataSuccessPayload {
+    players: string[],
+    matches: string[][]
+}
 
-export const SELECT_MATCH_WINNNER = 'SELECT_MATCH_WINNER';
-
-export interface MatchWinnerSelection {
-    type: typeof SELECT_MATCH_WINNNER,
+export interface MatchWinnerPayload {
     matchIndex: number,
     // between 0 and 1
     winnerIndex: number

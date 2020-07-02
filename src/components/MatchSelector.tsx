@@ -1,23 +1,14 @@
 import React from "react";
-import { connect } from 'react-redux';
-import { selectMatchWinner } from "../store/actions";
 
 interface MatchSelectorProps {
     matches: string[][];
     onClickMatch: (matchIndex: number, pIndex: number) => void
 }
 
-// interface MatchSelectorState {
-//     type:
-// }
-
 class MatchSelector extends React.Component<MatchSelectorProps> {
 
     render() {
         const matches = this.props.matches
-        // const defaultMatch = ["player 1", "player 2"];
-        // var matches = (new Array(5)).fill(defaultMatch);
-        
         return (
             <div>
                 {
@@ -35,4 +26,4 @@ class MatchSelector extends React.Component<MatchSelectorProps> {
     }
 }
 
-export default connect(null, { selectMatchWinner })(MatchSelector);
+export default MatchSelector;
