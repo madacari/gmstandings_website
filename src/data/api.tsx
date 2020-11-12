@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { RegionType, GroupType } from '../types';
 
-const url = 'https://playhearthstone.com/en-us/api/esports/schedule/grandmasters/';
+const url = 'https://gm-standings-api.herokuapp.com/tournament-data?season=2';
+// const url = 'http://localhost:8080/tournament-data?season=2&year=2019';
 const public_path = `/hsgmdata.json`;
 
 interface ParamsType {
@@ -10,6 +11,7 @@ interface ParamsType {
 }
 
 const getPlayers = async (region: RegionType, group: GroupType, params?: ParamsType)  => {
+    console.log("Fetching ", url);
     const rep = await axios.get(url, ).then( response => {
         return getPlayersAux(response.data, region, group);
     })

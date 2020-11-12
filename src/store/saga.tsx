@@ -9,14 +9,14 @@ function* fetchDataRequest() {
         const currentRegion = yield select(getCurrentRegion);
         const currentGroup = yield select(getCurrentGroup);
         
-        const playersData = yield call(Api.fakeGetPlayers, currentRegion, currentGroup);
+        const playersData = yield call(Api.getPlayers, currentRegion, currentGroup);
         const players = playersData.players;
         const playerDir = players.reduce((acc: any, cur: string, idx: number) => {
             acc[cur] = idx;
             return acc;
         }, {});
 
-        const allMatches = yield call(Api.fakeGetResults, currentRegion, currentGroup);
+        const allMatches = yield call(Api.getResults, currentRegion, currentGroup);
         const matchesLeft = allMatches.filter(matchLeftToPlay);
         const playedMatches = allMatches.filter(matchPlayed);
         yield put(ACTIONS.fetchDataSuccess({ players: players, playerDir: playerDir, matchesToDisplay: matchesLeft,  }))
